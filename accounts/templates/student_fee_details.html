@@ -1,0 +1,690 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fees Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-title h2 {
+            margin: 0;
+            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .title-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #666;
+            border: 2px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .summary-card:nth-child(2)::before {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+
+        .summary-card:nth-child(3)::before {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .summary-card:nth-child(4)::before {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .summary-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .summary-card:nth-child(2) .summary-icon {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+
+        .summary-card:nth-child(3) .summary-icon {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .summary-card:nth-child(4) .summary-icon {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        /* Fee Structure Section */
+        .fee-structure-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #667eea;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        td {
+            padding: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .fee-item {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .amount {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-overdue {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Payment History */
+        .payment-history-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .payment-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .payment-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .payment-info p {
+            font-size: 13px;
+            color: #999;
+            margin: 0;
+        }
+
+        .payment-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #27ae60;
+        }
+
+        /* Alert Box */
+        .alert-box {
+            background: #fff3cd;
+            border-left: 4px solid #f39c12;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .alert-icon {
+            width: 50px;
+            height: 50px;
+            background: #f39c12;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .alert-content h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+
+        .alert-content p {
+            margin: 0;
+            color: #856404;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .payment-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <div class="title-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div>
+                    <h2>Fees Details</h2>
+                    <p style="margin: 5px 0 0 0; color: #999; font-size: 14px;">Complete fee structure and payment history</p>
+                </div>
+            </div>
+            <div>
+                
+            </div>
+        </div>
+
+        <!-- Alert Box -->
+        <div class="alert-box">
+            <div class="alert-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="alert-content">
+                <h4>Payment Reminder</h4>
+                <p>Your next installment of ₹15,000 is due on <strong>March 15, 2026</strong>. Please make the payment before the due date to avoid late fees.</p>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="summary-header">
+                    <div>
+                        <div class="summary-label">Total Fees</div>
+                        <div class="summary-amount">₹60,000</div>
+                    </div>
+                    <div class="summary-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-header">
+                    <div>
+                        <div class="summary-label">Paid Amount</div>
+                        <div class="summary-amount">₹45,000</div>
+                    </div>
+                    <div class="summary-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-header">
+                    <div>
+                        <div class="summary-label">Pending Amount</div>
+                        <div class="summary-amount">₹15,000</div>
+                    </div>
+                    <div class="summary-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-header">
+                    <div>
+                        <div class="summary-label">Next Due Date</div>
+                        <div class="summary-amount" style="font-size: 20px;">Mar 15, 2026</div>
+                    </div>
+                    <div class="summary-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fee Structure Section -->
+        <div class="fee-structure-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-list"></i>
+                    Fee Structure
+                </h3>
+                <span style="color: #999; font-size: 14px;">Academic Year 2025-2026</span>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fee Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fee-item">Tuition Fee</td>
+                            <td>Annual tuition charges for MCA program</td>
+                            <td class="amount">₹40,000</td>
+                            <td><span class="status-badge status-paid"><i class="fas fa-check"></i> Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fee-item">Library Fee</td>
+                            <td>Access to library resources and books</td>
+                            <td class="amount">₹3,000</td>
+                            <td><span class="status-badge status-paid"><i class="fas fa-check"></i> Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fee-item">Lab Fee</td>
+                            <td>Computer lab and practical sessions</td>
+                            <td class="amount">₹5,000</td>
+                            <td><span class="status-badge status-paid"><i class="fas fa-check"></i> Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fee-item">Examination Fee</td>
+                            <td>Semester examination charges</td>
+                            <td class="amount">₹4,000</td>
+                            <td><span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fee-item">Sports Fee</td>
+                            <td>Sports facilities and activities</td>
+                            <td class="amount">₹2,000</td>
+                            <td><span class="status-badge status-paid"><i class="fas fa-check"></i> Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fee-item">Development Fee</td>
+                            <td>Infrastructure development charges</td>
+                            <td class="amount">₹3,000</td>
+                            <td><span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fee-item">Miscellaneous Fee</td>
+                            <td>Other administrative charges</td>
+                            <td class="amount">₹3,000</td>
+                            <td><span class="status-badge status-paid"><i class="fas fa-check"></i> Paid</span></td>
+                        </tr>
+                        <tr style="background: #f0f0f0; font-weight: bold;">
+                            <td colspan="2" style="text-align: right; font-size: 16px;">Total Annual Fee</td>
+                            <td class="amount" style="font-size: 20px;">₹60,000</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment History Section -->
+        <div class="payment-history-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Payment History
+                </h3>
+            </div>
+
+            <div class="payment-item">
+                <div class="payment-info">
+                    <h4>First Installment Payment</h4>
+                    <p><i class="fas fa-calendar"></i> January 15, 2026 | <i class="fas fa-credit-card"></i> Transaction ID: TXN123456789</p>
+                    <p><i class="fas fa-building"></i> Payment Method: Online Banking</p>
+                </div>
+                <div class="payment-amount">₹25,000</div>
+            </div>
+
+            <div class="payment-item">
+                <div class="payment-info">
+                    <h4>Second Installment Payment</h4>
+                    <p><i class="fas fa-calendar"></i> February 10, 2026 | <i class="fas fa-credit-card"></i> Transaction ID: TXN987654321</p>
+                    <p><i class="fas fa-building"></i> Payment Method: Debit Card</p>
+                </div>
+                <div class="payment-amount">₹20,000</div>
+            </div>
+
+            <div class="payment-item" style="border-left-color: #f39c12; background: #fff9e6;">
+                <div class="payment-info">
+                    <h4>Third Installment - Pending</h4>
+                    <p><i class="fas fa-calendar"></i> Due Date: March 15, 2026</p>
+                    <p><i class="fas fa-exclamation-triangle"></i> Please pay before due date</p>
+                </div>
+                <div class="payment-amount" style="color: #f39c12;">₹15,000</div>
+            </div>
+        </div>
+
+        <!-- Fee Breakdown Section -->
+        <div class="fee-structure-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Installment Plan
+                </h3>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Installment</th>
+                            <th>Due Date</th>
+                            <th>Amount</th>
+                            <th>Payment Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fee-item">1st Installment</td>
+                            <td>January 15, 2026</td>
+                            <td class="amount">₹25,000</td>
+                            <td>January 15, 2026</td>
+                            <td><span class="status-badge status-paid"><i class="fas fa-check-circle"></i> Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fee-item">2nd Installment</td>
+                            <td>February 10, 2026</td>
+                            <td class="amount">₹20,000</td>
+                            <td>February 10, 2026</td>
+                            <td><span class="status-badge status-paid"><i class="fas fa-check-circle"></i> Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fee-item">3rd Installment</td>
+                            <td>March 15, 2026</td>
+                            <td class="amount">₹15,000</td>
+                            <td>-</td>
+                            <td><span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment Instructions -->
+        <div class="fee-structure-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Payment Instructions
+                </h3>
+            </div>
+
+            <div style="padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                <h4 style="color: #333; margin-bottom: 15px; font-size: 18px;">How to Make Payment:</h4>
+                <ol style="color: #666; line-height: 2; padding-left: 20px;">
+                    <li>Visit the college accounts office or use online payment portal</li>
+                    <li>Provide your Student ID (STD2026001) for payment processing</li>
+                    <li>Choose payment method: Cash, Card, Online Banking, or UPI</li>
+                    <li>Collect payment receipt and keep for future reference</li>
+                    <li>Late payment charges of ₹500 will be applied after due date</li>
+                </ol>
+
+                <h4 style="color: #333; margin: 20px 0 15px 0; font-size: 18px;">Bank Details for Online Transfer:</h4>
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                    <p style="margin: 5px 0; color: #666;"><strong>Bank Name:</strong> State Bank of India</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>Account Name:</strong> Student Management College</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>Account Number:</strong> 1234567890123456</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>IFSC Code:</strong> SBIN0001234</p>
+                    <p style="margin: 5px 0; color: #666;"><strong>Branch:</strong> Bhopal Main Branch</p>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
+                    <p style="margin: 0; color: #1565c0;"><i class="fas fa-info-circle"></i> <strong>Note:</strong> Please add your Student ID in the payment reference/remarks section for quick processing.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}

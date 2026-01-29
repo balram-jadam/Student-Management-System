@@ -1,0 +1,670 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Student</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .header-card h2 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        /* Profile Preview Card */
+        .profile-preview {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .current-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 5px solid #f0f0f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+            overflow: hidden;
+        }
+
+        .current-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .student-info-preview h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .student-info-preview p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .form-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .form-card-header h4 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-card-body {
+            padding: 35px;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #667eea;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        .form-control,
+        .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        /* Alert Messages */
+        .alert {
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 25px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Error Messages */
+        .text-danger {
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0 0 0;
+            color: #dc3545;
+            font-size: 12px;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .info-box i {
+            color: #2196f3;
+            margin-right: 10px;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #1565c0;
+            font-size: 14px;
+        }
+
+        /* Submit Section */
+        .submit-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+            text-align: center;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-cancel {
+            background: white;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-cancel:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .form-card-body {
+                padding: 25px 20px;
+            }
+
+            .header-card h2 {
+                font-size: 24px;
+            }
+
+            .submit-section {
+                flex-direction: column;
+            }
+
+            .btn-submit,
+            .btn-cancel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+
+        <!-- Page Header -->
+        <div class="header-card">
+            <h2>
+                <div class="header-icon">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                Update Student Information
+            </h2>
+        </div>
+
+        <!-- Profile Preview -->
+        <div class="profile-preview">
+            <div class="current-photo">
+                {% if profile.profile_photo %}
+                    <img src="{{ profile.profile_photo.url }}" alt="{{ profile.user.first_name }}">
+                {% else %}
+                    {{ profile.user.first_name.0 }}{{ profile.user.last_name.0 }}
+                {% endif %}
+            </div>
+            <div class="student-info-preview">
+                <h3>{{ profile.user.first_name }} {{ profile.user.last_name }}</h3>
+                <p><strong>Student ID:</strong> STD{{ profile.user.id }}</p>
+                <p><strong>Email:</strong> {{ profile.user.email }}</p>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+
+            <div class="form-card-header">
+                <h4>
+                    <i class="fas fa-edit"></i>
+                    Edit Student Details
+                </h4>
+            </div>
+
+            <div class="form-card-body">
+
+                <!-- Info Box -->
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <p><strong>Note:</strong> Please ensure all information is accurate. Fields marked with <span style="color: #dc3545;">*</span> are required.</p>
+                </div>
+
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <strong>
+                                {% if message.tags == 'success' %}
+                                    <i class="fas fa-check-circle"></i>
+                                {% elif message.tags == 'error' or message.tags == 'danger' %}
+                                    <i class="fas fa-exclamation-circle"></i>
+                                {% elif message.tags == 'warning' %}
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                {% else %}
+                                    <i class="fas fa-info-circle"></i>
+                                {% endif %}
+                            </strong>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Form -->
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Non-field Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Personal Information Section -->
+
+                    
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-user"></i>
+                            Personal Information
+                        </div>
+                        <div class="row g-3">
+                            <!-- First Name -->
+                            <div class="col-md-6">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label {% if form.first_name.field.required %}required-field{% endif %}">
+                                    {{ form.first_name.label }}
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger">
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="col-md-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label {% if form.last_name.field.required %}required-field{% endif %}">
+                                    {{ form.last_name.label }}
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger">
+                                        {{ form.last_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label {% if form.email.field.required %}required-field{% endif %}">
+                                    {{ form.email.label }}
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Phone -->
+                            {% if form.phone %}
+                            <div class="col-md-6">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label {% if form.phone.field.required %}required-field{% endif %}">
+                                    {{ form.phone.label }}
+                                </label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger">
+                                        {{ form.phone.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Age -->
+                            {% if form.age %}
+                            <div class="col-md-6">
+                                <label for="{{ form.age.id_for_label }}" class="form-label {% if form.age.field.required %}required-field{% endif %}">
+                                    {{ form.age.label }}
+                                </label>
+                                {{ form.age }}
+                                {% if form.age.errors %}
+                                    <div class="text-danger">
+                                        {{ form.age.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Gender -->
+                            {% if form.gender %}
+                            <div class="col-md-6">
+                                <label for="{{ form.gender.id_for_label }}" class="form-label {% if form.gender.field.required %}required-field{% endif %}">
+                                    {{ form.gender.label }}
+                                </label>
+                                {{ form.gender }}
+                                {% if form.gender.errors %}
+                                    <div class="text-danger">
+                                        {{ form.gender.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Academic Information Section -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-graduation-cap"></i>
+                            Academic Information
+                        </div>
+                        <div class="row g-3">
+                            <!-- Course -->
+                            {% if form.course %}
+                            <div class="col-md-6">
+                                <label for="{{ form.course.id_for_label }}" class="form-label {% if form.course.field.required %}required-field{% endif %}">
+                                    {{ form.course.label }}
+                                </label>
+                                {{ form.course }}
+                                {% if form.course.errors %}
+                                    <div class="text-danger">
+                                        {{ form.course.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Roll Number -->
+                            {% if form.roll_number %}
+                            <div class="col-md-6">
+                                <label for="{{ form.roll_number.id_for_label }}" class="form-label {% if form.roll_number.field.required %}required-field{% endif %}">
+                                    {{ form.roll_number.label }}
+                                </label>
+                                {{ form.roll_number }}
+                                {% if form.roll_number.errors %}
+                                    <div class="text-danger">
+                                        {{ form.roll_number.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Address Information Section -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Address Information
+                        </div>
+                        <div class="row g-3">
+                            <!-- City -->
+                            {% if form.city %}
+                            <div class="col-md-6">
+                                <label for="{{ form.city.id_for_label }}" class="form-label {% if form.city.field.required %}required-field{% endif %}">
+                                    {{ form.city.label }}
+                                </label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="text-danger">
+                                        {{ form.city.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- State -->
+                            {% if form.state %}
+                            <div class="col-md-6">
+                                <label for="{{ form.state.id_for_label }}" class="form-label {% if form.state.field.required %}required-field{% endif %}">
+                                    {{ form.state.label }}
+                                </label>
+                                {{ form.state }}
+                                {% if form.state.errors %}
+                                    <div class="text-danger">
+                                        {{ form.state.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Address -->
+                            {% if form.address %}
+                            <div class="col-md-12">
+                                <label for="{{ form.address.id_for_label }}" class="form-label {% if form.address.field.required %}required-field{% endif %}">
+                                    {{ form.address.label }}
+                                </label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="text-danger">
+                                        {{ form.address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Profile Photo Section -->
+                    {% if form.profile_photo %}
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-camera"></i>
+                            Profile Photo
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="{{ form.profile_photo.id_for_label }}" class="form-label">
+                                    {{ form.profile_photo.label }}
+                                </label>
+                                {{ form.profile_photo }}
+                                {% if form.profile_photo.help_text %}
+                                    <small class="text-muted d-block mt-1">{{ form.profile_photo.help_text }}</small>
+                                {% endif %}
+                                {% if form.profile_photo.errors %}
+                                    <div class="text-danger">
+                                        {{ form.profile_photo.errors }}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if profile.profile_photo %}
+                                <div style="margin-top: 15px; text-align: center;">
+                                    <p><strong>Current Photo:</strong></p>
+                                    <img src="{{ profile.profile_photo.url }}" alt="Current Photo" style="max-width: 200px; max-height: 200px; border-radius: 10px; border: 2px solid #e0e0e0;">
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Other Form Fields -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Additional Information
+                        </div>
+                        <div class="row g-3">
+                            {% for field in form %}
+                                {% if 'first_name' not in field.name and 'last_name' not in field.name and 'email' not in field.name and 'phone' not in field.name and 'age' not in field.name and 'gender' not in field.name and 'course' not in field.name and 'roll_number' not in field.name and 'city' not in field.name and 'state' not in field.name and 'address' not in field.name and 'profile_photo' not in field.name %}
+                                    <div class="col-md-6">
+                                        <label for="{{ field.id_for_label }}" class="form-label {% if field.field.required %}required-field{% endif %}">
+                                            {{ field.label }}
+                                        </label>
+                                        {{ field }}
+                                        {% if field.help_text %}
+                                            <small class="text-muted d-block mt-1">{{ field.help_text }}</small>
+                                        {% endif %}
+                                        {% if field.errors %}
+                                            <div class="text-danger">
+                                                {{ field.errors }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Submit Section -->
+                    <div class="submit-section">
+                        <a href="#" class="btn-cancel">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save me-2"></i>Update Student
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Add Bootstrap classes to Django form fields
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add form-control class to input fields
+            document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"], input[type="tel"], input[type="file"], textarea').forEach(function(element) {
+                element.classList.add('form-control');
+            });
+            
+            // Add form-select class to select fields
+            document.querySelectorAll('select').forEach(function(element) {
+                element.classList.add('form-select');
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

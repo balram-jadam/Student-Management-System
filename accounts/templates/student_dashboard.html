@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .profile-role {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .profile-details {
+            text-align: left;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Services Section */
+        .services-section h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+            border-left: 4px solid #3498db;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .service-card:nth-child(2) {
+            border-left-color: #e74c3c;
+        }
+
+        .service-card:nth-child(3) {
+            border-left-color: #f39c12;
+        }
+
+        .service-card:nth-child(4) {
+            border-left-color: #27ae60;
+        }
+
+        .service-card:nth-child(5) {
+            border-left-color: #9b59b6;
+        }
+
+        .service-card:nth-child(6) {
+            border-left-color: #1abc9c;
+        }
+
+        .service-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .service-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .service-description {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}</h1>
+            <div class="header-actions">
+                <a href="#" class="btn btn-primary">Change Password</a>
+                <a href="{% url 'update_student' request.user.studentprofile.id %}" class="btn btn-secondary">Update Profile</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-image">
+                    {% if request.user.studentprofile.profile_photo %}
+                        <img src="{{ request.user.studentprofile.profile_photo.url }}" alt="Profile Photo">
+                    {% else %}
+                        {{ request.user.first_name.0 }}{{ request.user.last_name.0 }}
+                    {% endif %}
+                </div>
+                <div class="profile-name">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+                <div class="profile-role">Student</div>
+
+                <div class="profile-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Student ID</span>
+                        <span class="detail-value">STD{{ request.user.id }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value">{{ request.user.email }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value">{{ request.user.studentprofile.phone }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Course</span>
+                        <span class="detail-value">{{ request.user.studentprofile.course }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Gender</span>
+                        <span class="detail-value">{{ request.user.studentprofile.gender }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">State</span>
+                        <span class="detail-value">{{ request.user.studentprofile.state }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">City</span>
+                        <span class="detail-value">{{ request.user.studentprofile.city }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Section -->
+            <div class="services-section">
+                <h2>Student Services</h2>
+                <div class="services-grid">
+                    <a href="{% url 'studentsubject' %}" class="service-card">
+                        <div class="service-icon">📚</div>
+                        <div class="service-title">My Subjects</div>
+                        <div class="service-description">View enrolled subjects and syllabus</div>
+                    </a>
+
+                    <a href="{% url 'studentattendance' %}" class="service-card">
+                        <div class="service-icon">📊</div>
+                        <div class="service-title">Attendance</div>
+                        <div class="service-description">Check your attendance percentage</div>
+                    </a>
+
+                    <a href="{% url 'studentresults' %}" class="service-card">
+                        <div class="service-icon">🏆</div>
+                        <div class="service-title">Results</div>
+                        <div class="service-description">View exam marks & performance</div>
+                    </a>
+
+                    <a href="{% url 'studentfeedetails' %}" class="service-card">
+                        <div class="service-icon">💳</div>
+                        <div class="service-title">Fees Details</div>
+                        <div class="service-description">Check fee status and payments</div>
+                    </a>
+
+                    <a href="#" class="service-card">
+                        <div class="service-icon">📢</div>
+                        <div class="service-title">Notices</div>
+                        <div class="service-description">Important announcements</div>
+                    </a>
+
+                    <a href="#" class="service-card">
+                        <div class="service-icon">💬</div>
+                        <div class="service-title">Support</div>
+                        <div class="service-description">Contact admin or raise issues</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
